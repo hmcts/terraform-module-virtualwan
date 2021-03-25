@@ -1,8 +1,57 @@
+# Express Route Circuits
+variable "enable_express_route_circuit" {
+  description = "Enable Azure Express Route Circuit."
+  type        = bool
+  default     = true
+}
+
+variable "express_route_circuit_allow_classic_operations" {
+  description = "Allow the circuit to interact with classic (RDFE) resources."
+  type        = bool
+  default     = false
+}
+
+variable "express_route_circuit_bandwidth_in_mbps" {
+  description = "The bandwidth in Mbps of the circuit being created."
+  type        = number
+  default     = 2000
+}
+
+variable "express_route_circuit_name" {
+  description = "Enter ExressRoute Circuit name."
+  type        = string
+  default     = null
+}
+
+variable "express_route_circuit_peering_location" {
+  description = "The name of the peering location and not the Azure resource location."
+  type        = string
+  default     = "London"
+}
+
+variable "express_route_circuit_service_provider_name" {
+  description = "The name of the ExpressRoute Service Provider."
+  type        = string
+  default     = "Equinix"
+}
+
+variable "express_route_circuit_sku_family" {
+  description = "Enter ExressRoute Circuit name."
+  type        = string
+  default     = "MeteredData"
+}
+
+variable "express_route_circuit_sku_tier" {
+  description = "Enter ExressRoute Circuit name."
+  type        = string
+  default     = "Premium"
+}
+
 # General
 variable "common_tags" {
   description = "Common tag to be applied to resources"
   type        = map(string)
-  default     = []
+  default     = {}
 }
 
 variable "location" {
