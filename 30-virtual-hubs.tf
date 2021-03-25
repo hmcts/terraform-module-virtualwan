@@ -8,8 +8,8 @@ resource "azurerm_virtual_hub" "virtual_hub" {
   dynamic "route" {
     for_each = var.virtual_hub_routes
     content {
-      address_prefixes    = tolist(virtual_hub_routes.value["address_prefixes"])
-      next_hop_ip_address = virtual_hub_routes.value["next_hop_ip_address"]
+      address_prefixes    = [route.value["address_prefixes"]]
+      next_hop_ip_address = route.value["next_hop_ip_address"]
     }
   }
   sku            = var.virtual_hub_sku
