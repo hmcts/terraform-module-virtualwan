@@ -1,17 +1,67 @@
+# ExpressRoute Circuit
 resource "azurerm_express_route_circuit" "express_route_circuit" {
-  count = var.enable_express_route_circuit ? 1 : 0
+  for_each = var.express_route_circuits
 
-  allow_classic_operations = var.express_route_circuit_allow_classic_operations
-  bandwidth_in_mbps        = var.express_route_circuit_bandwidth_in_mbps
-  location                 = azurerm_resource_group.virtual_wan_resource_group.location
-  name                     = var.express_route_circuit_name != null ? var.express_route_circuit_name : format("%s-%s", var.name, var.environment)
-  peering_location         = var.express_route_circuit_peering_location
-  resource_group_name      = azurerm_resource_group.virtual_wan_resource_group.name
-  service_provider_name    = var.express_route_circuit_service_provider_name
+  allow_classic_operations = lookup(each.value, "allow_classic_operations", false)
+  bandwidth_in_mbps        = lookup(each.value, "bandwidth_in_mbps", 2000)
+  location                 = lookup(each.value, "location", azurerm_resource_group.virtual_wan_resource_group[0].location)
+  name                     = each.key
+  peering_location         = lookup(each.value, "peering_location", "London")
+  resource_group_name      = lookup(each.value, "resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name)
+  service_provider_name    = lookup(each.value, "service_provider_name", "Equinix")
   sku {
-    family = var.express_route_circuit_sku_family
-    tier   = var.express_route_circuit_sku_tier
+    family = lookup(each.value, "sky_family", "MeteredData")
+    tier   = lookup(each.value, "sku_tier", "Premium")
   }
+
+  tags = var.common_tags
+}
+
+# ExpressRoute Circuit Authorizations
+resource "azurerm_express_route_circuit_authorization" "express_route_circuit_authorization" {
+  for_each = var.express_route_circuit_authorizations
+
+  express_route_circuit_name = lookup(each.value, "express_route_circuit_name", null)
+  name                       = each.key
+  resource_group_name        = lookup(each.value, "resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name)
+}
+
+# ExpressRoute Circuit Peerings
+resource "azurerm_express_route_circuit_peering" "express_route_circuit_peering" {
+  for_each = var.express_route_circuit_peerings
+
+  express_route_circuit_name    = lookup(each.value, "express_route_circuit_name", null)
+  primary_peer_address_prefix   = lookup(each.value, "primary_peer_address_prefix", null)
+  peering_type                  = lookup(each.value, "peering_type", null)
+  peer_asn                      = lookup(each.value, "peer_asn", null)
+  resource_group_name           = lookup(each.value, "resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name)
+  route_filter_id               = lookup(each.value, "route_filter_id", null)
+  secondary_peer_address_prefix = lookup(each.value, "secondary_peer_address_prefix", null)
+  shared_key                    = lookup(each.value, "shared_key", null)
+  vlan_id                       = lookup(each.value, "vlan_id", null)
+}
+
+# Virtual Network Gateway Conenctions
+data "azurerm_virtual_network_gateway" "virtual_network_gateway" {
+  for_each = var.virtual_network_gateway_connections
+
+  name                = lookup(each.value, "virtual_network_gateway_name", null)
+  resource_group_name = lookup(each.value, "virtual_network_gateway_resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name)
+}
+
+resource "azurerm_virtual_network_gateway_connection" "virtual_network_gateway_connection" {
+  for_each = var.virtual_network_gateway_connections
+
+  authorization_key               = lookup(each.value, "express_route_circuit_authorization_name", null) != null ? azurerm_express_route_circuit_authorization.express_route_circuit_authorization[lookup(each.value, "express_route_circuit_authorization_name", null)].id : null
+  express_route_circuit_id        = lookup(each.value, "express_route_circuit_name", null) != null ? azurerm_express_route_circuit.express_route_circuit[lookup(each.value, "express_route_circuit_name", null)].id : null
+  location                        = lookup(each.value, "location", azurerm_resource_group.virtual_wan_resource_group[0].location)
+  name                            = each.key
+  peer_virtual_network_gateway_id = lookup(each.value, "peer_virtual_network_gateway_id", null)
+  resource_group_name             = lookup(each.value, "resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name)
+  routing_weight                  = lookup(each.value, "routing_weight", 10)
+  shared_key                      = lookup(each.value, "shared_key", null)
+  type                            = lookup(each.value, "type", null)
+  virtual_network_gateway_id      = data.azurerm_virtual_network_gateway.virtual_network_gateway[lookup(each.value, "virtual_network_gateway_name", null)].id
 
   tags = var.common_tags
 }
