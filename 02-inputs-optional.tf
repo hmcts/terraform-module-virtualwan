@@ -14,6 +14,46 @@ variable "express_route_circuit_peerings" {
   default = {}
 }
 
+variable "virtual_network_gateways" {
+  type    = map(map(any))
+  default = {}
+}
+
+variable "virtual_network_gateway_ip_configurations" {
+  type    = map(list(map(string)))
+  default = {}
+}
+
+variable "virtual_network_gateway_vpn_client_configurations" {
+  type    = map(map(any))
+  default = {}
+}
+
+variable "virtual_network_gateway_revoked_certificates" {
+  type    = map(list(map(string)))
+  default = {}
+}
+
+variable "virtual_network_gateway_root_certificates" {
+  type    = map(list(map(string)))
+  default = {}
+}
+
+variable "virtual_network_gateway_bgp_settings" {
+  type    = map(map(any))
+  default = {}
+}
+
+variable "virtual_network_gateway_peering_addresses" {
+  type    = map(list(map(string)))
+  default = {}
+}
+
+variable "virtual_network_gateway_custom_routes" {
+  type    = map(map(any))
+  default = {}
+}
+
 variable "virtual_network_gateway_connections" {
   type    = map(map(any))
   default = {}
@@ -45,9 +85,8 @@ variable "virtual_hubs" {
 }
 
 variable "virtual_hub_routes" {
-  description = "A comma-delimited list of address prefixes and the next hop IP address - Example: {a = b, c = d}"
-  type        = map(list(map(string)))
-  default     = {}
+  type    = map(list(map(string)))
+  default = {}
 }
 
 variable "virtual_hub_connections" {
@@ -76,7 +115,6 @@ variable "virtual_hub_route_tables" {
 }
 
 variable "virtual_hub_route_table_routes" {
-  description = "A comma-delimited list of address prefixes and the next hop IP address - Example: {a = b, c = d}"
-  type        = map(list(map(string)))
-  default     = {}
+  type    = map(list(map(string)))
+  default = {}
 }
