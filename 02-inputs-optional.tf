@@ -14,6 +14,26 @@ variable "express_route_circuit_peerings" {
   default = {}
 }
 
+# General
+variable "common_tags" {
+  description = "Common tag to be applied to resources"
+  type        = map(string)
+  default     = {}
+}
+
+variable "location" {
+  description = "Target Azure location to deploy the resource."
+  type        = string
+  default     = "UK South"
+}
+
+variable "resource_group_name" {
+  description = "Enter Resource Group name."
+  type        = string
+  default     = null
+}
+
+# Virtual Network Gateways
 variable "virtual_network_gateways" {
   type    = map(map(any))
   default = {}
@@ -57,25 +77,6 @@ variable "virtual_network_gateway_custom_routes" {
 variable "virtual_network_gateway_connections" {
   type    = map(map(any))
   default = {}
-}
-
-# General
-variable "common_tags" {
-  description = "Common tag to be applied to resources"
-  type        = map(string)
-  default     = {}
-}
-
-variable "location" {
-  description = "Target Azure location to deploy the resource."
-  type        = string
-  default     = "UK South"
-}
-
-variable "resource_group_name" {
-  description = "Enter Resource Group name."
-  type        = string
-  default     = null
 }
 
 # Virtual Hub
