@@ -78,7 +78,7 @@ resource "azurerm_virtual_network_gateway" "virtual_network_gateway" {
 resource "azurerm_virtual_network_gateway_connection" "virtual_network_gateway_connection" {
   for_each = var.virtual_network_gateway_connections
 
-  authorization_key               = lookup(each.value, "express_route_circuit_authorization_name", null) != null ? azurerm_express_route_circuit_authorization.express_route_circuit_authorization[lookup(each.value, "express_route_circuit_authorization_name", null)].id : null
+  authorization_key               = lookup(each.value, "express_route_circuit_authorization_name", null) != null ? azurerm_express_route_circuit_authorization.express_route_circuit_authorization[lookup(each.value, "express_route_circuit_authorization_name", null)].authorization_key : null
   express_route_circuit_id        = lookup(each.value, "express_route_circuit_name", null) != null ? azurerm_express_route_circuit.express_route_circuit[lookup(each.value, "express_route_circuit_name", null)].id : null
   location                        = lookup(each.value, "location", azurerm_resource_group.virtual_wan_resource_group[0].location)
   name                            = each.key
