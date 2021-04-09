@@ -49,7 +49,7 @@ resource "azurerm_express_route_gateway" "express_route_gateway" {
   resource_group_name = lookup(each.value, "resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name)
   location            = lookup(each.value, "location", azurerm_resource_group.virtual_wan_resource_group[0].location)
   virtual_hub_id      = azurerm_virtual_hub.virtual_hub[each.key].id
-  scale_units         = 1
+  scale_units         = lookup(each.value, "express_route_gateway_units", 1)
 
   tags = var.common_tags
 }
