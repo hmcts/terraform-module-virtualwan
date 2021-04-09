@@ -29,7 +29,7 @@ resource "azurerm_virtual_hub_connection" "virtual_hub_connection" {
   virtual_hub_id            = azurerm_virtual_hub.virtual_hub[lookup(each.value, "virtual_hub_name", null)].id
 
   dynamic "routing" {
-    for_each = lookup(var.virtual_hub_connection_routing, each.key, {}) != {} ? lookup(var.virtual_hub_connection_routing, each.key, {}) : {}
+    for_each = lookup(var.virtual_hub_connection_routing, each.key, null) != null ? lookup(var.virtual_hub_connection_routing, each.key, null) : {}
     content {
       associated_route_table_id = azurerm_virtual_hub_route_table.virtual_hub_route_table[lookup(routing.value, "associated_route_table_name", null)].id
       dynamic "propagated_route_table" {
