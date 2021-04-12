@@ -14,6 +14,11 @@ variable "express_route_circuit_peerings" {
   default = {}
 }
 
+variable "express_route_gateways" {
+  type    = map(map(any))
+  default = {}
+}
+
 # General
 variable "common_tags" {
   description = "Common tag to be applied to resources"
