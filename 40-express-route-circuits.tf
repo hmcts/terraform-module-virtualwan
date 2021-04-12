@@ -40,3 +40,17 @@ resource "azurerm_express_route_circuit_peering" "express_route_circuit_peering"
   shared_key                    = lookup(each.value, "shared_key", null)
   vlan_id                       = lookup(each.value, "vlan_id", null)
 }
+
+
+# ExpressRoute Gateways
+resource "azurerm_express_route_gateway" "express_route_gateway" {
+  for_each = var.express_route_gateways
+
+  location            = lookup(each.value, "location", azurerm_resource_group.virtual_wan_resource_group[0].location)
+  name                = each.key
+  resource_group_name = lookup(each.value, "resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name)
+  scale_units         = lookup(each.value, "scale_units", 1)
+  virtual_hub_id      = azurerm_virtual_hub.virtual_hub[lookup(each.value, "virtual_hub_name", null)].id
+
+  tags = var.common_tags
+}
