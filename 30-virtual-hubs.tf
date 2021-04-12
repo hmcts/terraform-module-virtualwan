@@ -29,22 +29,24 @@ resource "azurerm_virtual_hub_connection" "virtual_hub_connection" {
   virtual_hub_id            = azurerm_virtual_hub.virtual_hub[lookup(each.value, "virtual_hub_name", null)].id
 
   dynamic "routing" {
-    for_each = lookup(var.virtual_hub_connection_routing, each.key, null) != null ? lookup(var.virtual_hub_connection_routing, each.key, null) : {}
+    for_each = { for k, r in var.virtual_hub_connection_routing : k => r if k == each.key }
     content {
-      associated_route_table_id = azurerm_virtual_hub_route_table.virtual_hub_route_table[lookup(routing.value, "associated_route_table_name", null)].id
+      associated_route_table_id = lookup(routing.value, "associated_route_table_name", null) != null ? azurerm_virtual_hub_route_table.virtual_hub_route_table[lookup(routing.value, "associated_route_table_name", null)].id : null
       dynamic "propagated_route_table" {
-        for_each = lookup(var.virtual_hub_connection_propagated_route_tables, each.key, null) != null ? lookup(var.virtual_hub_connection_propagated_route_tables, each.key, null) : {}
+        for_each = { for k, r in var.virtual_hub_connection_propagated_route_tables : k => r if k == each.key }
+        iterator = propagated
         content {
-          labels          = lookup(propagated_route_table.value, "labels", null) != null ? split(",", replace(lookup(propagated_route_table.value, "labels", null), " ", "")) : []
-          route_table_ids = lookup(propagated_route_table.value, "route_table_names", null) != null ? [for i in sort(split(",", replace(lookup(propagated_route_tables.value, "route_table_names", null), " ", ""))) : azurerm_virtual_hub_route_tables.virtual_hub_route_table[i].id] : []
+          labels          = lookup(propagated.value, "labels", null) != null ? split(",", replace(lookup(propagated.value, "labels", null), " ", "")) : []
+          route_table_ids = lookup(propagated.value, "route_table_names", null) != null ? [for i in sort(split(",", replace(lookup(propagated.value, "route_table_names", null), " ", ""))) : azurerm_virtual_hub_route_table.virtual_hub_route_table[i].id] : []
         }
       }
       dynamic "static_vnet_route" {
-        for_each = lookup(var.virtual_hub_connection_static_vnet_routes, each.key, null) != null ? lookup(var.virtual_hub_connection_static_vnet_routes, each.key, null) : {}
+        for_each = { for k, r in var.virtual_hub_connection_static_vnet_routes : k => r if k == each.key }
+        iterator = static
         content {
-          address_prefixes    = [static_vnet_route.value["address_prefixes"]]
-          name                = static_vnet_route.value["name"]
-          next_hop_ip_address = static_vnet_route.value["next_hop_ip_address"]
+          address_prefixes    = [static.value["address_prefixes"]]
+          name                = static.value["name"]
+          next_hop_ip_address = static.value["next_hop_ip_address"]
         }
       }
     }
