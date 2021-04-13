@@ -41,7 +41,7 @@ resource "azurerm_virtual_hub_connection" "virtual_hub_connection" {
         }
       }
       dynamic "static_vnet_route" {
-        for_each = { for k, r in var.virtual_hub_connection_static_vnet_routes : k => r if k == each.key }
+        for_each = lookup(var.virtual_hub_connection_static_vnet_routes, each.key, null) != null ? lookup(var.virtual_hub_connection_static_vnet_routes, each.key, null) : []
         iterator = static
         content {
           address_prefixes    = [static.value["address_prefixes"]]
