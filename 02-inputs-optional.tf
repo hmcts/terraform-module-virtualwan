@@ -124,3 +124,14 @@ variable "virtual_hub_route_table_routes" {
   type    = map(list(map(string)))
   default = {}
 }
+
+# VPN Sites
+variable "vpn_sites" {
+  type    = map(map(any))
+  default = {}
+}
+
+variable "vpn_site_links" {
+  type    = map(list(map(string)))
+  default = {}
+}
