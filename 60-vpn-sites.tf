@@ -3,7 +3,7 @@ resource "azurerm_vpn_site" "vpn_site" {
 
   address_cidrs = lookup(each.value, "address_cidrs", null) != null ? split(",", replace(lookup(each.value, "address_cidrs", null), " ", "")) : []
   device_model  = lookup(each.value, "device_model", null)
-  device_vendor = lookup(each.value, "device_vendor ", null)
+  device_vendor = lookup(each.value, "device_vendor", null)
   dynamic "link" {
     for_each = lookup(var.vpn_site_links, each.key, null) != null ? lookup(var.vpn_site_links, each.key, null) : []
     content {
