@@ -9,7 +9,7 @@ resource "azurerm_virtual_hub" "virtual_hub" {
   dynamic "route" {
     for_each = lookup(var.virtual_hub_routes, each.key, null) != null ? lookup(var.virtual_hub_routes, each.key, null) : []
     content {
-      address_prefixes    = [route.value["address_prefixes"]]
+      address_prefixes    = split(",", replace(lookup(route.value, "address_prefixes", null), " ", ""))
       next_hop_ip_address = route.value["next_hop_ip_address"]
     }
   }
