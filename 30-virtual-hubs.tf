@@ -13,7 +13,7 @@ resource "azurerm_virtual_hub" "virtual_hub" {
       next_hop_ip_address = route.value["next_hop_ip_address"]
     }
   }
-  sku            = lookup(each.value, "sku", "Standard")
+  sku            = lookup(each.value, "sku", null)
   virtual_wan_id = azurerm_virtual_wan.virtual_wan[lookup(each.value, "virtual_wan_name", null)].id
 
   tags = var.common_tags
