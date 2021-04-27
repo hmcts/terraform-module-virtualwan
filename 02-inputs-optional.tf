@@ -124,3 +124,13 @@ variable "virtual_hub_route_table_routes" {
   type    = map(list(map(string)))
   default = {}
 }
+
+variable "virtual_hub_default_route_table_labels" {
+  type    = map(list(string))
+  default = {}
+}
+
+variable "virtual_hub_default_route_table_routes" {
+  type    = map(list(map(string)))
+  default = {}
+}

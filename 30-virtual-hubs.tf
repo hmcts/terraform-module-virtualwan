@@ -17,6 +17,21 @@ resource "azurerm_virtual_hub" "virtual_hub" {
   virtual_wan_id = azurerm_virtual_wan.virtual_wan[lookup(each.value, "virtual_wan_name", null)].id
 
   tags = var.common_tags
+
+  default_route_table {
+    labels = lookup(var.virtual_hub_default_route_table_labels, each.key, null) != null ? lookup(var.virtual_hub_default_route_table_labels, each.key, null) : []
+
+    dynamic "route" {
+      for_each = lookup(var.virtual_hub_default_route_table_routes, each.key, null) != null ? lookup(var.virtual_hub_default_route_table_routes, each.key, null) : []
+      content {
+        destinations      = [route.value["destinations"]]
+        destinations_type = route.value["destinations_type"]
+        name              = route.value["name"]
+        next_hop          = route.value["next_hop"]
+        next_hop_type     = lookup(route.value, "next_hop_type", "ResourceId")
+      }
+    }
+  }
 }
 
 # Virtual Hub Connections
