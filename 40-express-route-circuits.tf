@@ -39,6 +39,31 @@ resource "azurerm_express_route_circuit_peering" "express_route_circuit_peering"
   secondary_peer_address_prefix = lookup(each.value, "secondary_peer_address_prefix", null)
   shared_key                    = lookup(each.value, "shared_key", null)
   vlan_id                       = lookup(each.value, "vlan_id", null)
+
+  dynamic "microsoft_peering_config" {
+    for_each = lookup(each.value, "advertised_public_prefixes", null) != null ? [1] : []
+    content {
+      advertised_public_prefixes = lookup(each.value, "advertised_public_prefixes", null) != null ? split(",", replace(lookup(each.value, "advertised_public_prefixes", null), " ", "")) : []
+      customer_asn               = lookup(each.value, "customer_asn", null)
+      routing_registry_name      = lookup(each.value, "routing_registry_name", null)
+    }
+  }
+  dynamic "ipv6" {
+    for_each = lookup(each.value, "ipv6_advertised_public_prefixes", null) != null ? [1] : []
+    content {
+      primary_peer_address_prefix   = lookup(each.value, "ipv6_primary_peer_address_prefix", null)
+      secondary_peer_address_prefix = lookup(each.value, "ipv6_secondary_peer_address_prefix", null)
+      route_filter_id               = lookup(each.value, "ipv6_route_filter_id", null)
+      dynamic "microsoft_peering" {
+        for_each = lookup(each.value, "ipv6_advertised_public_prefixes", null) != null ? [1] : []
+        content {
+          advertised_public_prefixes = lookup(each.value, "ipv6_advertised_public_prefixes", null) != null ? split(",", replace(lookup(each.value, "advertised_public_prefixes", null), " ", "")) : []
+          customer_asn               = lookup(each.value, "ipv6_customer_asn", null)
+          routing_registry_name      = lookup(each.value, "ipv6_routing_registry_name", null)
+        }
+      }
+    }
+  }
 }
 
 

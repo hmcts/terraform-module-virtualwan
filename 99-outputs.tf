@@ -1,9 +1,9 @@
 output "resource_group_location" {
-  value = var.resource_group_name != null ? azurerm_resource_group.virtual_wan_resource_group[0].location : null
+  value = azurerm_resource_group.virtual_wan_resource_group[0].location != null ? azurerm_resource_group.virtual_wan_resource_group[0].location : null
 }
 
 output "resource_group_name" {
-  value = var.resource_group_name != null ? azurerm_resource_group.virtual_wan_resource_group[0].name : null
+  value = azurerm_resource_group.virtual_wan_resource_group[0].name != null ? azurerm_resource_group.virtual_wan_resource_group[0].name : null
 }
 
 output "virtual_hub_connection_ids" {
