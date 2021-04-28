@@ -31,13 +31,13 @@ resource "azurerm_virtual_hub_connection" "virtual_hub_connection" {
   dynamic "routing" {
     for_each = { for k, r in var.virtual_hub_connection_routing : k => r if k == each.key }
     content {
-      associated_route_table_id = lookup(routing.value, "associated_route_table_name", null) != null ? azurerm_virtual_hub_route_table.virtual_hub_route_table[lookup(routing.value, "associated_route_table_name", null)].id : null
+      associated_route_table_id = lookup(routing.value, "associated_route_table_name", null) == "default" ? format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualHubs/%s/hubRouteTables/defaultRouteTable", data.azurerm_subscription.current.subscription_id, lookup(routing.value, "resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name), lookup(each.value, "virtual_hub_name", null)) : lookup(routing.value, "associated_route_table_name", null) != null ? azurerm_virtual_hub_route_table.virtual_hub_route_table[lookup(routing.value, "associated_route_table_name", null)].id : null
       dynamic "propagated_route_table" {
         for_each = { for k, r in var.virtual_hub_connection_propagated_route_tables : k => r if k == each.key }
         iterator = propagated
         content {
           labels          = lookup(propagated.value, "labels", null) != null ? split(",", replace(lookup(propagated.value, "labels", null), " ", "")) : []
-          route_table_ids = lookup(propagated.value, "route_table_names", null) != null ? [for i in sort(split(",", replace(lookup(propagated.value, "route_table_names", null), " ", ""))) : azurerm_virtual_hub_route_table.virtual_hub_route_table[i].id] : []
+          route_table_ids = lookup(propagated.value, "route_table_names", null) != null ? contains(sort(split(",", replace(lookup(propagated.value, "route_table_names", null), " ", ""))), "default") ? concat([format("/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualHubs/%s/hubRouteTables/defaultRouteTable", data.azurerm_subscription.current.subscription_id, lookup(routing.value, "resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name), lookup(each.value, "virtual_hub_name", null))], [for i in sort(split(",", replace(lookup(propagated.value, "route_table_names", null), " ", ""))) : azurerm_virtual_hub_route_table.virtual_hub_route_table[i].id if i != "default"]) : [for i in sort(split(",", replace(lookup(propagated.value, "route_table_names", null), " ", ""))) : azurerm_virtual_hub_route_table.virtual_hub_route_table[i].id if i != "default"] : []
         }
       }
       dynamic "static_vnet_route" {
