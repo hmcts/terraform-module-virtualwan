@@ -90,11 +90,6 @@ variable "virtual_hubs" {
   default = {}
 }
 
-variable "virtual_hub_routes" {
-  type    = map(list(map(string)))
-  default = {}
-}
-
 variable "virtual_hub_connections" {
   type    = map(map(any))
   default = {}
@@ -111,6 +106,16 @@ variable "virtual_hub_connection_propagated_route_tables" {
 }
 
 variable "virtual_hub_connection_static_vnet_routes" {
+  type    = map(list(map(string)))
+  default = {}
+}
+
+variable "virtual_hub_default_route_table_routes" {
+  type    = map(list(map(string)))
+  default = {}
+}
+
+variable "virtual_hub_routes" {
   type    = map(list(map(string)))
   default = {}
 }

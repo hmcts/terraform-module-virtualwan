@@ -2,7 +2,23 @@
 resource "azurerm_virtual_hub" "virtual_hub" {
   for_each = var.virtual_hubs
 
-  address_prefix      = lookup(each.value, "address_prefix", null)
+  address_prefix = lookup(each.value, "address_prefix", null)
+  dynamic "default_route_table" {
+    for_each = lookup(each.value, "labels", null) != null || lookup(var.virtual_hub_default_route_table_routes, each.key, null) != null ? [1] : []
+    content {
+      labels = lookup(each.value, "labels", null) != null ? split(",", replace(lookup(each.value, "labels", null), " ", "")) : []
+      dynamic "route" {
+        for_each = lookup(var.virtual_hub_default_route_table_routes, each.key, null) != null ? lookup(var.virtual_hub_default_route_table_routes, each.key, null) : []
+        content {
+          destinations      = [route.value["destinations"]]
+          destinations_type = route.value["destinations_type"]
+          name              = route.value["name"]
+          next_hop          = route.value["next_hop"]
+          next_hop_type     = lookup(route.value, "next_hop_type", "ResourceId")
+        }
+      }
+    }
+  }
   location            = lookup(each.value, "location", azurerm_resource_group.virtual_wan_resource_group[0].location)
   name                = each.key
   resource_group_name = lookup(each.value, "resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name)
