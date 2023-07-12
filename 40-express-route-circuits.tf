@@ -80,7 +80,7 @@ resource "azurerm_express_route_gateway" "express_route_gateway" {
   tags = var.common_tags
 }
 
-resource "azurerm_express_route_circuit_connection" "express_route_connection" {
+resource "azurerm_express_route_connection" "express_route_connection" {
   for_each = var.express_route_connections
 
   name                             = each.key
