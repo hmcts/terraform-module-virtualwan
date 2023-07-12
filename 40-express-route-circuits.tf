@@ -66,7 +66,6 @@ resource "azurerm_express_route_circuit_peering" "express_route_circuit_peering"
   }
 }
 
-
 # ExpressRoute Gateways
 resource "azurerm_express_route_gateway" "express_route_gateway" {
   for_each = var.express_route_gateways
@@ -78,4 +77,14 @@ resource "azurerm_express_route_gateway" "express_route_gateway" {
   virtual_hub_id      = azurerm_virtual_hub.virtual_hub[lookup(each.value, "virtual_hub_name", null)].id
 
   tags = var.common_tags
+}
+
+resource "azurerm_express_route_connection" "express_route_connection" {
+  for_each = var.express_route_connections
+
+  name                             = each.key
+  express_route_circuit_peering_id = each.value.peering_id
+  express_route_gateway_id         = each.value.gateway_id
+  routing_weight                   = lookup(each.value, "routing_weight", 0)
+  authorization_key                = lookup(each.value, "authorization_key", null)
 }

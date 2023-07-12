@@ -19,6 +19,11 @@ variable "express_route_gateways" {
   default = {}
 }
 
+variable "express_route_connections" {
+  type    = map(map(any))
+  default = {}
+}
+
 # General
 variable "common_tags" {
   description = "Common tag to be applied to resources"
