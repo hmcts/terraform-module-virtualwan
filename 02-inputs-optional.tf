@@ -20,7 +20,7 @@ variable "express_route_gateways" {
 }
 
 variable "express_route_connections" {
-  type    = map(object({ peering_id = string, gateway_id = string }))
+  type    = map(map(any))
   default = {}
 }
 

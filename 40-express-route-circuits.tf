@@ -66,7 +66,6 @@ resource "azurerm_express_route_circuit_peering" "express_route_circuit_peering"
   }
 }
 
-
 # ExpressRoute Gateways
 resource "azurerm_express_route_gateway" "express_route_gateway" {
   for_each = var.express_route_gateways
@@ -86,4 +85,6 @@ resource "azurerm_express_route_connection" "express_route_connection" {
   name                             = each.key
   express_route_circuit_peering_id = each.value.peering_id
   express_route_gateway_id         = each.value.gateway_id
+  routing_weight                   = lookup(each.value, "routing_weight", 0)
+  authorization_key                = lookup(each.value, "authorization_key", null)
 }
