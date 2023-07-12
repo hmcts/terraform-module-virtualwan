@@ -79,3 +79,11 @@ resource "azurerm_express_route_gateway" "express_route_gateway" {
 
   tags = var.common_tags
 }
+
+resource "azurerm_express_route_circuit_connection" "express_route_connection" {
+  for_each = var.express_route_connections
+
+  name                             = each.key
+  express_route_circuit_peering_id = each.value.peering_id
+  express_route_gateway_id         = each.value.gateway_id
+}
