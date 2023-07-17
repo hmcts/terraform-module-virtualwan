@@ -1,30 +1,30 @@
 resource "azurerm_vpn_site" "vpn_site" {
   for_each = var.vpn_sites
 
-  address_cidrs = lookup(each.value, "address_cidrs", null) != null ? split(",", replace(lookup(each.value, "address_cidrs", null), " ", "")) : []
-  device_model  = lookup(each.value, "device_model", null)
-  device_vendor = lookup(each.value, "device_vendor", null)
+  address_cidrs = each.value.address_cidrs
+  device_model  = each.value.device_model
+  device_vendor = each.value.device_vendor
   dynamic "link" {
-    for_each = lookup(var.vpn_site_links, each.key, null) != null ? lookup(var.vpn_site_links, each.key, null) : []
+    for_each = lookup(var.vpn_site_links, each.key, [])
     content {
       dynamic "bgp" {
-        for_each = lookup(link.value, "asn", null) != null ? [1] : []
+        for_each = link.value.asn != null ? [1] : []
         content {
-          asn             = lookup(link.value, "asn", null)
-          peering_address = lookup(link.value, "peering_address", null)
+          asn             = link.value.asn
+          peering_address = link.value.peering_address
         }
       }
-      fqdn          = lookup(link.value, "fqdn", null)
-      ip_address    = lookup(link.value, "ip_address", null)
-      name          = lookup(link.value, "name", null)
-      provider_name = lookup(link.value, "provider_name", null)
-      speed_in_mbps = lookup(link.value, "speed_in_mbps", null)
+      fqdn          = link.value.fqdn
+      ip_address    = link.value.ip_address
+      name          = link.value.name
+      provider_name = link.value.provider_name
+      speed_in_mbps = link.value.speed_in_mbps
     }
   }
   location            = lookup(each.value, "location", azurerm_resource_group.virtual_wan_resource_group[0].location)
   name                = each.key
   resource_group_name = lookup(each.value, "resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name)
-  virtual_wan_id      = azurerm_virtual_wan.virtual_wan[lookup(each.value, "virtual_wan_name", null)].id
+  virtual_wan_id      = azurerm_virtual_wan.virtual_wan[each.value.virtual_wan_name].id
 
   tags = var.common_tags
 }
@@ -37,10 +37,10 @@ resource "azurerm_vpn_gateway_connection" "vpn_gateway_connections" {
   remote_vpn_site_id = azurerm_vpn_site.vpn_site[each.value.remote_vpn_site_name].id
 
   dynamic "vpn_link" {
-    for_each = lookup(var.vpn_gateway_connections_links, each.key, null) != null ? lookup(var.vpn_gateway_connections_links, each.key, null) : []
+    for_each = lookup(var.vpn_gateway_connections_links, each.key, [])
     content {
       name                           = vpn_link.value.name
-      vpn_site_link_id               = azurerm_vpn_site.vpn_site[each.value.remote_vpn_site_name].link[[for key, value in [lookup(var.vpn_site_links, each.value.remote_vpn_site_name, null) != null ? lookup(var.vpn_site_links, each.value.remote_vpn_site_name, null) : []] : key if value.name == lookup(vpn_link.value, "vpn_site_link_name", vpn_link.value.name)]].id
+      vpn_site_link_id               = azurerm_vpn_site.vpn_site[each.value.remote_vpn_site_name].link[[for key, value in lookup(var.vpn_site_links, each.value.remote_vpn_site_name, []) : key if value.name == lookup(vpn_link.value, "vpn_site_link_name", vpn_link.value.name)]].id
       bgp_enabled                    = vpn_link.value.bgp_enabled
       egress_nat_rule_ids            = vpn_link.value.egress_nat_rule_ids
       ingress_nat_rule_ids           = vpn_link.value.ingress_nat_rule_ids
