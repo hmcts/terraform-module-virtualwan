@@ -40,7 +40,7 @@ resource "azurerm_vpn_gateway_connection" "vpn_gateway_connections" {
     for_each = lookup(var.vpn_gateway_connections_links, each.key, [])
     content {
       name                           = vpn_link.value.name
-      vpn_site_link_id               = azurerm_vpn_site.vpn_site[each.value.remote_vpn_site_name].link[[for key, value in lookup(var.vpn_site_links, each.value.remote_vpn_site_name, []) : key if value.name == lookup(vpn_link.value, "vpn_site_link_name", vpn_link.value.name)]].id
+      vpn_site_link_id               = azurerm_vpn_site.vpn_site[each.value.remote_vpn_site_name].link[[for key, value in lookup(var.vpn_site_links, each.value.remote_vpn_site_name) : key if value.name == (vpn_link.value.vpn_site_link_name != null ? vpn_link.value.vpn_site_link_name : vpn_link.value.name)][0]].id
       bgp_enabled                    = vpn_link.value.bgp_enabled
       egress_nat_rule_ids            = vpn_link.value.egress_nat_rule_ids
       ingress_nat_rule_ids           = vpn_link.value.ingress_nat_rule_ids
