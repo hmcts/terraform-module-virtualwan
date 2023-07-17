@@ -151,8 +151,8 @@ variable "vpn_gateway_connections_links" {
     name                           = string
     vpn_site_link_index            = number
     bgp_enabled                    = optional(bool, true)
-    egress_nat_rule_ids            = optiona(list(string), [])
-    ingress_nat_rule_ids           = optiona(list(string), [])
+    egress_nat_rule_ids            = optional(list(string), [])
+    ingress_nat_rule_ids           = optional(list(string), [])
     protocol                       = optional(string, "IKEv2")
     local_azure_ip_address_enabled = optional(bool, false)
     route_weight                   = optional(number, 0)
