@@ -149,7 +149,7 @@ variable "vpn_gateway_connections" {
 variable "vpn_gateway_connections_links" {
   type = map(list(object({
     name                           = string
-    vpn_site_link_id               = string
+    vpn_site_link_name             = string
     bgp_enabled                    = optional(bool, true)
     egress_nat_rule_ids            = optional(list(string), [])
     ingress_nat_rule_ids           = optional(list(string), [])
