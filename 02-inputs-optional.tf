@@ -142,7 +142,7 @@ variable "vpn_site_links" {
 }
 
 variable "vpn_gateway_connections" {
-  type = map(map({
+  type = map(object({
     vpn_gateway_id       = string
     remote_vpn_site_name = string
   }))
