@@ -142,7 +142,10 @@ variable "vpn_site_links" {
 }
 
 variable "vpn_gateway_connections" {
-  type    = map(map(any))
+  type = map(map(object({
+    vpn_gateway_id       = string
+    remote_vpn_site_name = string
+  })))
   default = {}
 }
 
