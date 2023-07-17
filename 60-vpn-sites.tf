@@ -52,7 +52,7 @@ resource "azurerm_vpn_gateway_connection" "vpn_gateway_connections" {
 
   lifecycle {
     ignore_changes = [
-      vpn_link.*.shared_key
+      vpn_links.*.shared_key
     ]
   }
 }
