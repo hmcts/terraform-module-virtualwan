@@ -136,9 +136,9 @@ variable "vpn_sites" {
     address_cidrs       = optional(list(string), [])
     device_model        = optional(string, null)
     device_vendor       = optional(string, null)
-    location            = optional(string, null)
-    resource_group_name = optional(string, null)
-    virtual_wan_name    = optional(string, null)
+    location            = optional(string)
+    resource_group_name = optional(string)
+    virtual_wan_name    = string
   }))
   default = {}
 }
