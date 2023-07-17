@@ -21,9 +21,9 @@ resource "azurerm_vpn_site" "vpn_site" {
       speed_in_mbps = link.value.speed_in_mbps
     }
   }
-  location            = lookup(each.value, "location", azurerm_resource_group.virtual_wan_resource_group[0].location)
+  location            = each.value.location != null ? each.value.location : azurerm_resource_group.virtual_wan_resource_group[0].location
   name                = each.key
-  resource_group_name = lookup(each.value, "resource_group_name", azurerm_resource_group.virtual_wan_resource_group[0].name)
+  resource_group_name = each.value.resource_group_name != null ? each.value.resource_group_name : azurerm_resource_group.virtual_wan_resource_group[0].name
   virtual_wan_id      = azurerm_virtual_wan.virtual_wan[each.value.virtual_wan_name].id
 
   tags = var.common_tags
