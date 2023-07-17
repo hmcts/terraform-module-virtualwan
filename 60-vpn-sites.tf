@@ -39,14 +39,14 @@ resource "azurerm_vpn_gateway_connection" "vpn_gateway_connections" {
   dynamic "vpn_link" {
     for_each = lookup(var.vpn_gateway_connections_links, each.key, null) != null ? lookup(var.vpn_gateway_connections_links, each.key, null) : []
     content {
-      name                           = lookup(vpn_link.value, "name", null)
-      vpn_site_link_id               = azurerm_vpn_site.vpn_site[lookup(each.value, "remote_vpn_site_name", null)].link[lookup(vpn_link.value, "vpn_site_link_index", null)].id
-      bgp_enabled                    = lookup(vpn_link.value, "bgp_enabled", true)
-      egress_nat_rule_ids            = lookup(vpn_link.value, "egress_nat_rule_names", [])
-      ingress_nat_rule_ids           = lookup(vpn_link.value, "ingress_nat_rule_names", [])
-      protocol                       = lookup(vpn_link.value, "protocol", "IKEv2")
-      local_azure_ip_address_enabled = lookup(vpn_link.value, "local_azure_ip_address_enabled", false)
-      route_weight                   = lookup(vpn_link.value, "route_weight", 0)
+      name                           = vpn_link.value.name
+      vpn_site_link_id               = azurerm_vpn_site.vpn_site[lookup(each.value, "remote_vpn_site_name", null)].link[vpn_link.value.vpn_site_link_index].id
+      bgp_enabled                    = vpn_link.value.bgp_enabled
+      egress_nat_rule_ids            = vpn_link.value.egress_nat_rule_names
+      ingress_nat_rule_ids           = vpn_link.value.ingress_nat_rule_names
+      protocol                       = vpn_link.value.protocol
+      local_azure_ip_address_enabled = vpn_link.value.local_azure_ip_address_enabled
+      route_weight                   = vpn_link.value.route_weight
     }
   }
 
