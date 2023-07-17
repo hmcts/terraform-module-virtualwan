@@ -132,24 +132,42 @@ variable "virtual_hub_route_table_routes" {
 
 # VPN Sites
 variable "vpn_sites" {
-  type    = map(map(any))
+  type = map(object({
+    address_cidrs       = optional(list(string), [])
+    device_model        = optional(string, null)
+    device_vendor       = optional(string, null)
+    location            = optional(string)
+    resource_group_name = optional(string)
+    virtual_wan_name    = string
+  }))
   default = {}
 }
 
 variable "vpn_site_links" {
-  type    = map(list(map(string)))
+  type = map(list(object({
+    asn             = optional(string, null)
+    ip_address      = string
+    name            = string
+    peering_address = optional(string, null)
+    provider_name   = string
+    speed_in_mbps   = number
+    fqdn            = optional(string, null)
+  })))
   default = {}
 }
 
 variable "vpn_gateway_connections" {
-  type    = map(map(any))
+  type = map(object({
+    vpn_gateway_id       = string
+    remote_vpn_site_name = string
+  }))
   default = {}
 }
 
 variable "vpn_gateway_connections_links" {
   type = map(list(object({
     name                           = string
-    vpn_site_link_index            = number
+    vpn_site_link_name             = optional(string, null)
     bgp_enabled                    = optional(bool, true)
     egress_nat_rule_ids            = optional(list(string), [])
     ingress_nat_rule_ids           = optional(list(string), [])
