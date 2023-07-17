@@ -140,3 +140,13 @@ variable "vpn_site_links" {
   type    = map(list(map(string)))
   default = {}
 }
+
+variable "vpn_gateway_connections" {
+  type    = map(map(any))
+  default = {}
+}
+
+variable "vpn_gateway_connections_links" {
+  type    = map(list(map(any)))
+  default = {}
+}

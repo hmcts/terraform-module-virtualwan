@@ -28,3 +28,19 @@ resource "azurerm_vpn_site" "vpn_site" {
 
   tags = var.common_tags
 }
+
+resource "azurerm_vpn_gateway_connection" "vpn_gateway_connections" {
+  for_each = var.vpn_gateway_connections
+
+  name               = each.key
+  vpn_gateway_id     = lookup(each.value, "vpn_gateway_id", null)
+  remote_vpn_site_id = azurerm_vpn_site.vpn_site[lookup(each.value, "remote_vpn_site_name", null)].id
+
+  dynamic "vpn_link" {
+    for_each = lookup(var.vpn_gateway_connections_links, each.key, null) != null ? lookup(var.vpn_gateway_connections_links, each.key, null) : []
+    content {
+      name             = lookup(vpn_link.value, "name", null)
+      vpn_site_link_id = azurerm_vpn_site.vpn_site[lookup(each.value, "remote_vpn_site_name", null)].link[lookup(vpn_link.value, "vpn_site_link_index", null)].id
+    }
+  }
+}
