@@ -138,6 +138,7 @@ variable "vpn_gateways" {
     scale_units         = optional(number, 1)
     virtual_hub_name    = string
   }))
+  default = {}
 }
 
 variable "vpn_sites" {
