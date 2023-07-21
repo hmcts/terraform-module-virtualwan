@@ -1,3 +1,14 @@
+resource "azurerm_vpn_gateway" "example" {
+  for_each = var.vpn_gateways
+
+  location            = each.value.location == null ? azurerm_resource_group.virtual_wan_resource_group[0].location : each.value.location
+  name                = each.key
+  resource_group_name = each.value.resource_group_name == null ? azurerm_resource_group.virtual_wan_resource_group[0].name : each.value.resource_group_name
+  scale_unit          = each.value.scale_unit
+  virtual_hub_id      = azurerm_virtual_hub.virtual_hub[each.value.virtual_hub_name].id
+  tags                = var.common_tags
+}
+
 resource "azurerm_vpn_site" "vpn_site" {
   for_each = var.vpn_sites
 

@@ -131,6 +131,16 @@ variable "virtual_hub_route_table_routes" {
 }
 
 # VPN Sites
+variable "vpn_gateways" {
+  type = map(object({
+    location            = optional(string)
+    resource_group_name = optional(string)
+    scale_unit          = optional(number, 1)
+    virtual_hub_name    = string
+  }))
+  default = {}
+}
+
 variable "vpn_sites" {
   type = map(object({
     address_cidrs       = optional(list(string), [])
