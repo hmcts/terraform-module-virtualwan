@@ -135,7 +135,7 @@ variable "vpn_gateways" {
   type = map(object({
     location            = optional(string)
     resource_group_name = optional(string)
-    scale_units         = optional(number, 1)
+    scale_unit          = optional(number, 1)
     virtual_hub_name    = string
   }))
   default = {}
