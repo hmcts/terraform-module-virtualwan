@@ -60,15 +60,14 @@ resource "azurerm_virtual_hub_route_table" "virtual_hub_route_table" {
   labels         = lookup(each.value, "labels", null) != null ? split(",", replace(lookup(each.value, "labels", null), " ", "")) : []
   name           = each.key
   virtual_hub_id = azurerm_virtual_hub.virtual_hub[lookup(each.value, "virtual_hub_name", null)].id
+}
 
-  dynamic "route" {
-    for_each = lookup(var.virtual_hub_route_table_routes, each.key, null) != null ? lookup(var.virtual_hub_route_table_routes, each.key, null) : []
-    content {
-      destinations      = [route.value["destinations"]]
-      destinations_type = lookup(route.value, "destinations_type", "CIDR")
-      name              = route.value["name"]
-      next_hop          = azurerm_virtual_hub.virtual_hub[lookup(route.value, "next_hop", null)].id
-      next_hop_type     = lookup(route.value, "next_hop_type", "ResourceId")
-    }
-  }
+resource "azurerm_virtual_hub_route_table_route" "virtual_hub_route_table_route" {
+  for_each          = var.virtual_hub_route_table_routes
+  route_table_id    = azurerm_virtual_hub_route_table.virtual_hub_route_table[each.value.route_table_name].id
+  destinations      = each.value.destinations
+  destinations_type = each.value.destinations_type
+  next_hop          = each.value.next_hop
+  next_hop_type     = each.value.next_hop_type
+  name              = each.key
 }
