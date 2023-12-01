@@ -121,7 +121,10 @@ variable "virtual_hub_connection_static_vnet_routes" {
 }
 
 variable "virtual_hub_route_tables" {
-  type    = map(map(any))
+  type = map(object({
+    labels           = optional(list(string))
+    virtual_hub_name = string
+  }))
   default = {}
 }
 
