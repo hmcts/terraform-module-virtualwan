@@ -67,7 +67,7 @@ resource "azurerm_virtual_hub_route_table_route" "virtual_hub_route_table_route"
   route_table_id    = azurerm_virtual_hub_route_table.virtual_hub_route_table[each.value.route_table_name].id
   destinations      = each.value.destinations
   destinations_type = each.value.destinations_type
-  next_hop          = each.value.next_hop
+  next_hop          = azurerm_virtual_hub.virtual_hub[each.value.next_hop].id
   next_hop_type     = each.value.next_hop_type
   name              = each.key
 }
