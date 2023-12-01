@@ -65,9 +65,9 @@ resource "azurerm_virtual_hub_route_table" "virtual_hub_route_table" {
     for_each = lookup(var.virtual_hub_route_table_routes, each.key, null) != null ? lookup(var.virtual_hub_route_table_routes, each.key, null) : []
     content {
       destinations      = [route.value["destinations"]]
-      destinations_type = route.value["destinations_type"]
+      destinations_type = lookup(route.value, "destinations_type", "CIDR")
       name              = route.value["name"]
-      next_hop          = route.value["next_hop"]
+      next_hop          = azurerm_virtual_hub.virtual_hub[lookup(route.value, "next_hop", null)].id
       next_hop_type     = lookup(route.value, "next_hop_type", "ResourceId")
     }
   }
