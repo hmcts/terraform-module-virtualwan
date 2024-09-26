@@ -139,6 +139,12 @@ variable "virtual_hub_route_table_routes" {
   default = {}
 }
 
+variable "virtual_hub_default_route_table_labels" {
+  type    = map(list(string))
+  default = {}
+}
+
+variable "virtual_hub_default_route_table_routes" {
 # VPN Sites
 variable "vpn_gateways" {
   type = map(object({
