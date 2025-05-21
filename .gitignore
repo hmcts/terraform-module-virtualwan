@@ -4,3 +4,5 @@
 *tfstate*
 *.swp
 .idea/*
+
+!.terraform-docs.yml
