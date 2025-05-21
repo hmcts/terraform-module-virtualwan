@@ -5,4 +5,4 @@
 *.swp
 .idea/*
 
-!.terraform-docs.yaml
+!.terraform-docs.yml
